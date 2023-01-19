@@ -1,0 +1,21 @@
+# action.yaml
+name: 'Node Package Version Increment'
+description: 'Increment the version of the npm package'
+inputs:
+  version_name:
+    description: 'version type to change'
+    required: false
+    default: "patch"
+  package_file_path:
+    description: 'package.json full path'
+    required: false
+    default: "package.json"
+outputs:
+  result:
+    description: 'Result of the Script'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.version_name}}
+    - ${{ inputs.package_file_path}}

@@ -1,6 +1,8 @@
 # action.yaml
-name: 'Node Package Version Increment'
-description: 'Increment the version of the npm package'
+name: 'npmabot'
+description: 'Increment the version of your npm package automatically'
+icon: 'arrow-up-circle'
+color: 'blue'
 inputs:
   version_name:
     description: 'version type to change'
@@ -9,7 +11,7 @@ inputs:
   package_file_path:
     description: 'package.json full path'
     required: false
-    default: "package.json"
+    default: 'package.json'
 outputs:
   result:
     description: 'Result of the Script'

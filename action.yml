@@ -1,8 +1,9 @@
 # action.yaml
 name: 'npmabot'
 description: 'Increment the version of your npm package automatically'
-icon: 'arrow-up-circle'
-color: 'blue'
+branding:
+  icon: 'arrow-up-circle'
+  color: 'blue'
 inputs:
   version_name:
     description: 'version type to change'

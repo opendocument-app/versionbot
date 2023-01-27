@@ -70,7 +70,7 @@ jobs:
                   BOT_REFERENCE_BRANCH: ${{ env.BOT_REFERENCE_BRANCH }}
               run: |
                   git fetch
-                  git rebase $BOT_REFERENCE_BRANCH
+                  git rebase origin/$BOT_REFERENCE_BRANCH
 
             - name: Push changes 📤
               uses: ad-m/github-push-action@master

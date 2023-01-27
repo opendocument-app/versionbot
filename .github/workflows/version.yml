@@ -1,0 +1,120 @@
+name: Bump version
+
+on:
+    pull_request:
+        types:
+            - closed
+    push:
+        branches:
+            - master
+    issue_comment:
+        types: [created]
+    workflow_dispatch:
+
+env:
+    BOT_PR_BRANCH: version-bump
+    BOT_PR_TITLE: "Bump version"
+    BOT_REFERENCE_BRANCH: master
+    BOT_COMMAND_PREFIX: "@versionbot"
+
+jobs:
+    merged:
+        name: Create PR
+        if:
+            ${{ (github.event_name == 'workflow_dispatch') || ( (github.event.pull_request.merged == true) &&
+            (github.event.pull_request.title==vars.BOT_PR_TITLE) ) }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: ${{ vars.BOT_PR_BRANCH }}
+
+            - name: Update version in package.json ✏️
+              uses: ./.github/actions/version
+              env:
+                  package_file_path: ./
+                  version_name: minor
+
+            - name: Configure Git ⚙️
+              run: |
+                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "Github-Actions[bot]"
+
+            - name: Commit files 📝
+              run: |
+                  git add .
+                  git commit -m "bump version"
+
+            - name: Create Pull Request 📤
+              uses: peter-evans/create-pull-request@v4
+              with:
+                  base: ${{ vars.BOT_REFERENCE_BRANCH }}
+                  branch: ${{ vars.BOT_PR_BRANCH }}
+                  title: ${{ vars.BOT_PR_TITLE }}
+
+    pushed:
+        name: Update PR 📥
+        if: github.event_name == 'push'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Configure Git ⚙️
+              run: |
+                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "Github-Actions[bot]"
+
+            - name: Merge Changes 🧬
+              env:
+                  BOT_REFERENCE_BRANCH: ${{ vars.BOT_REFERENCE_BRANCH }}
+              run: |
+                  git rebase $BOT_REFERENCE_BRANCH
+
+            - name: Push changes 📤
+              uses: ad-m/github-push-action@master
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: ${{ vars.BOT_PR_BRANCH }}
+
+    commented:
+        name: Read Comments 🤖
+        if:
+            ${{ ( github.event.issue.pull_request && github.event.issue.title==vars.BOT_PR_TITLE )  &&
+            contains(github.event.comment.body, vars.BOT_COMMAND_PREFIX) && ( contains(github.event.comment.body,
+            'major') ) }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: ${{ vars.BOT_PR_BRANCH }}
+
+            - name: Update version in package.json ✏️
+              run: |
+                  npm version --no-git-tag-version major
+              working-directory: ./
+
+            - name: Update version in package.json ✏️
+              run: |
+                  npm version --no-git-tag-version major
+              working-directory: ./functions
+
+            - name: Update version in package.json ✏️
+              run: |
+                  npm version --no-git-tag-version major
+              working-directory: ./functions/shared
+
+            - name: Configure Git ⚙️
+              run: |
+                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "Github-Actions[bot]"
+
+            - name: Commit files 📝
+              run: |
+                  git add .
+                  git commit -m "bump version"
+
+            - name: Push changes 📤
+              uses: ad-m/github-push-action@master
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: ${{ vars.BOT_PR_BRANCH }}

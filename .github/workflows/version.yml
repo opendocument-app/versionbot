@@ -57,6 +57,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+              with:
+                  ref: ${{ env.BOT_PR_BRANCH }}
 
             - name: Configure Git ⚙️
               run: |

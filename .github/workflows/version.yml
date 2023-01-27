@@ -18,16 +18,21 @@ env:
     BOT_COMMAND_PREFIX: "@versionbot"
 
 jobs:
-    merged:
-        name: Create PR
+    update:
+        name: Create or update PR
         if:
-            ${{ (github.event_name == 'workflow_dispatch') || ( (github.event.pull_request.merged == true) &&
+            ${{ github.event_name == 'push' }} || ${{ (github.event_name == 'workflow_dispatch') || ( (github.event.pull_request.merged == true) &&
             (github.event.pull_request.title=='Bump version') ) }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
               with:
-                  ref: ${{ env.BOT_PR_BRANCH }}
+                  ref: ${{ env.BOT_REFERENCE_BRANCH }}
+
+            - name: Recreate branch
+              run: |
+                  git checkout -D ${{ env.BOT_PR_BRANCH }}
+                  git checkout -b ${{ env.BOT_PR_BRANCH }}
 
             - name: Update version in package.json ✏️
               run: |
@@ -50,33 +55,15 @@ jobs:
                   base: ${{ env.BOT_REFERENCE_BRANCH }}
                   branch: ${{ env.BOT_PR_BRANCH }}
                   title: ${{ env.BOT_PR_TITLE }}
-
-    pushed:
-        name: Update PR 📥
-        if: github.event_name == 'push'
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: ${{ env.BOT_PR_BRANCH }}
-
-            - name: Configure Git ⚙️
-              run: |
-                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git config --local user.name "Github-Actions[bot]"
-
-            - name: Merge Changes 🧬
-              env:
-                  BOT_REFERENCE_BRANCH: ${{ env.BOT_REFERENCE_BRANCH }}
-              run: |
-                  git fetch
-                  git rebase origin/$BOT_REFERENCE_BRANCH
-
+              if: github.event_name != 'push'
+              
+              
             - name: Push changes 📤
               uses: ad-m/github-push-action@master
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   branch: ${{ env.BOT_PR_BRANCH }}
+              if: github.event_name == 'push'
 
     commented:
         name: Read Comments 🤖

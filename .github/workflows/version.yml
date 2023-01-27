@@ -31,7 +31,7 @@ jobs:
 
             - name: Update version in package.json ✏️
               run: |
-                  npm version --no-git-tag-version major
+                  npm version --no-git-tag-version minor
               working-directory: ./
 
             - name: Configure Git ⚙️

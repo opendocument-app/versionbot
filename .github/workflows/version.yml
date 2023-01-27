@@ -31,7 +31,7 @@ jobs:
 
             - name: Recreate branch
               run: |
-                  git checkout -D ${{ env.BOT_PR_BRANCH }}
+                  git branch -D ${{ env.BOT_PR_BRANCH }}
                   git checkout -b ${{ env.BOT_PR_BRANCH }}
 
             - name: Update version in package.json ✏️

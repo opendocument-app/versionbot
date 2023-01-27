@@ -21,7 +21,7 @@ jobs:
     update:
         name: Create or update PR
         if:
-            ${{ github.event_name == 'push' }} || ${{ (github.event_name == 'workflow_dispatch') || ( (github.event.pull_request.merged == true) &&
+            ${{ github.event_name == 'push' }} || ${{ (github.event_name == 'workflow_dispatch') }} || ${{ ( (github.event.pull_request.merged == true) &&
             (github.event.pull_request.title=='Bump version') ) }}
         runs-on: ubuntu-latest
         steps:
@@ -55,8 +55,7 @@ jobs:
                   branch: ${{ env.BOT_PR_BRANCH }}
                   title: ${{ env.BOT_PR_TITLE }}
               if: github.event_name != 'push'
-              
-              
+
             - name: Push changes 📤
               uses: ad-m/github-push-action@master
               with:
@@ -66,9 +65,9 @@ jobs:
               if: github.event_name == 'push'
 
     commented:
-        name: Read Comments 🤖
+        name: Read comments 🤖
         if:
-            ${{ ( github.event.issue.pull_request && github.event.issue.title=='Bump version' )  &&
+            ${{ ( github.event.issue.pull_request && github.event.issue.title=='Bump version' ) && contains(github.event.comment.body, 'versionbot') &&
             contains(github.event.comment.body, 'major') }}
         runs-on: ubuntu-latest
         steps:

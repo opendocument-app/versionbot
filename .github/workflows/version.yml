@@ -22,7 +22,7 @@ jobs:
         name: Create PR
         if:
             ${{ (github.event_name == 'workflow_dispatch') || ( (github.event.pull_request.merged == true) &&
-            (github.event.pull_request.title==${{ env.BOT_PR_TITLE }}) ) }}
+            (github.event.pull_request.title=='Bump version') ) }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -78,9 +78,8 @@ jobs:
     commented:
         name: Read Comments 🤖
         if:
-            ${{ ( github.event.issue.pull_request && github.event.issue.title==${{ env.BOT_PR_TITLE }} )  &&
-            contains(github.event.comment.body, env.BOT_COMMAND_PREFIX) && ( contains(github.event.comment.body,
-            'major') ) }}
+            ${{ ( github.event.issue.pull_request && github.event.issue.title=='Bump version' )  &&
+            contains(github.event.comment.body, 'major') }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3

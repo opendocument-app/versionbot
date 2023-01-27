@@ -6,7 +6,7 @@ on:
             - closed
     push:
         branches:
-            - master
+            - development
     issue_comment:
         types: [created]
     workflow_dispatch:
@@ -14,7 +14,7 @@ on:
 env:
     BOT_PR_BRANCH: version-bump
     BOT_PR_TITLE: "Bump version"
-    BOT_REFERENCE_BRANCH: master
+    BOT_REFERENCE_BRANCH: development
     BOT_COMMAND_PREFIX: "@versionbot"
 
 jobs:
@@ -30,10 +30,9 @@ jobs:
                   ref: ${{ vars.BOT_PR_BRANCH }}
 
             - name: Update version in package.json ✏️
-              uses: ./.github/actions/version
-              env:
-                  package_file_path: ./
-                  version_name: minor
+              run: |
+                  npm version --no-git-tag-version major
+              working-directory: ./
 
             - name: Configure Git ⚙️
               run: |
@@ -92,16 +91,6 @@ jobs:
               run: |
                   npm version --no-git-tag-version major
               working-directory: ./
-
-            - name: Update version in package.json ✏️
-              run: |
-                  npm version --no-git-tag-version major
-              working-directory: ./functions
-
-            - name: Update version in package.json ✏️
-              run: |
-                  npm version --no-git-tag-version major
-              working-directory: ./functions/shared
 
             - name: Configure Git ⚙️
               run: |

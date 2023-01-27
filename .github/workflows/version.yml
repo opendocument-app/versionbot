@@ -6,7 +6,7 @@ on:
             - closed
     push:
         branches:
-            - development
+            - master
     issue_comment:
         types: [created]
     workflow_dispatch:
@@ -14,7 +14,7 @@ on:
 env:
     BOT_PR_BRANCH: version-bump
     BOT_PR_TITLE: "Bump version"
-    BOT_REFERENCE_BRANCH: development
+    BOT_REFERENCE_BRANCH: master
     BOT_COMMAND_PREFIX: "@versionbot"
 
 jobs:

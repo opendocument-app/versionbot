@@ -79,7 +79,7 @@ jobs:
         name: Read Comments 🤖
         if:
             ${{ ( github.event.issue.pull_request && github.event.issue.title==${{ env.BOT_PR_TITLE }} )  &&
-            contains(github.event.comment.body, ${{ env.BOT_COMMAND_PREFIX }}) && ( contains(github.event.comment.body,
+            contains(github.event.comment.body, env.BOT_COMMAND_PREFIX) && ( contains(github.event.comment.body,
             'major') ) }}
         runs-on: ubuntu-latest
         steps:

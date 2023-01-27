@@ -21,7 +21,7 @@ jobs:
     update:
         name: Create or update PR
         if:
-            ${{ github.event_name == 'push' }} || ${{ github.event_name == 'workflow_dispatch' }} || ${{ github.event_name == 'issue_comment' && github.event.pull_request.merged == true &&
+            ${{ github.event_name == 'push' }} || ${{ github.event_name == 'workflow_dispatch' }} || ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true &&
             github.event.pull_request.title=='Bump version' }}
         runs-on: ubuntu-latest
         steps:

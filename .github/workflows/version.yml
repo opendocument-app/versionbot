@@ -45,7 +45,6 @@ jobs:
                   base: ${{ env.BOT_REFERENCE_BRANCH }}
                   branch: ${{ env.BOT_PR_BRANCH }}
                   title: ${{ env.BOT_PR_TITLE }}
-              if: github.event_name != 'push'
 
     commented:
         name: Read comments 🤖

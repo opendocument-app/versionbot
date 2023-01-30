@@ -21,7 +21,7 @@ jobs:
     update:
         name: Create or update PR
         if:
-            github.event_name == 'push' || github.event_name == 'workflow_dispatch' || ( github.event_name == 'pull_request' && github.event.pull_request.title=='Bump version' )
+            ( github.event_name == 'pull_request' && github.event.pull_request.title=='Bump version' ) || true
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -32,28 +32,20 @@ jobs:
               run: |
                   npm version --no-git-tag-version patch
               working-directory: ./
-
-            - name: Create Pull Request 📤
-              uses: peter-evans/create-pull-request@v4
-              with:
-                  base: ${{ env.BOT_REFERENCE_BRANCH }}
-                  branch: ${{ env.BOT_PR_BRANCH }}
-                  title: ${{ env.BOT_PR_TITLE }}
-
-    commented:
-        name: Read comments 🤖
-        if:
-            github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'minor')
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: ${{ env.BOT_REFERENCE_BRANCH }}
-
+              
             - name: Update version in package.json ✏️
               run: |
                   npm version --no-git-tag-version minor
               working-directory: ./
+              if: 
+                  github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'minor')
+
+            - name: Update version in package.json ✏️
+              run: |
+                  npm version --no-git-tag-version major
+              working-directory: ./
+              if: 
+                  github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'major')
 
             - name: Create Pull Request 📤
               uses: peter-evans/create-pull-request@v4

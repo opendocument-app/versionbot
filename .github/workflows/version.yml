@@ -30,14 +30,8 @@ jobs:
 
             - name: Update version in package.json ✏️
               run: |
-                  npm version --no-git-tag-version minor
-                  npm install
+                  npm version --no-git-tag-version patch
               working-directory: ./
-
-            - name: Configure Git ⚙️
-              run: |
-                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git config --local user.name "Github-Actions[bot]"
 
             - name: Create Pull Request 📤
               uses: peter-evans/create-pull-request@v4
@@ -49,31 +43,21 @@ jobs:
     commented:
         name: Read comments 🤖
         if:
-            github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'major')
+            github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'minor')
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
               with:
-                  ref: ${{ env.BOT_PR_BRANCH }}
+                  ref: ${{ env.BOT_REFERENCE_BRANCH }}
 
             - name: Update version in package.json ✏️
               run: |
-                  npm version --no-git-tag-version major
-                  npm install
+                  npm version --no-git-tag-version minor
               working-directory: ./
 
-            - name: Configure Git ⚙️
-              run: |
-                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git config --local user.name "Github-Actions[bot]"
-
-            - name: Commit files 📝
-              run: |
-                  git add .
-                  git commit -m "bump version"
-
-            - name: Push changes 📤
-              uses: ad-m/github-push-action@master
+            - name: Create Pull Request 📤
+              uses: peter-evans/create-pull-request@v4
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  base: ${{ env.BOT_REFERENCE_BRANCH }}
                   branch: ${{ env.BOT_PR_BRANCH }}
+                  title: ${{ env.BOT_PR_TITLE }}

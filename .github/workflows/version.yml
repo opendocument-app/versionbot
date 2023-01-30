@@ -21,7 +21,7 @@ jobs:
     update:
         name: Create or update PR
         if:
-            ( github.event_name == 'pull_request' && github.event.pull_request.title=='Bump version' ) || true
+            github.event_name == 'push' || github.event_name == 'workflow_dispatch' || ( github.event_name == 'pull_request' && github.event.pull_request.title=='Bump version' ) || ( github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' )
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -38,14 +38,14 @@ jobs:
                   npm version --no-git-tag-version minor
               working-directory: ./
               if: 
-                  github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'minor')
+                  contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'minor')
 
             - name: Update version in package.json ✏️
               run: |
                   npm version --no-git-tag-version major
               working-directory: ./
               if: 
-                  github.event_name == 'issue_comment' && github.event.issue.title=='Bump version' && contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'major')
+                  contains(github.event.comment.body, 'versionbot') && contains(github.event.comment.body, 'major')
 
             - name: Create Pull Request 📤
               uses: peter-evans/create-pull-request@v4

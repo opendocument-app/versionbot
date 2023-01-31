@@ -47,6 +47,7 @@ jobs:
             - name: Create Pull Request 📤
               uses: peter-evans/create-pull-request@v4
               with:
+                  draft: true
                   base: ${{ env.BOT_REFERENCE_BRANCH }}
                   branch: ${{ env.BOT_PR_BRANCH }}
                   title: ${{ env.BOT_PR_TITLE }}

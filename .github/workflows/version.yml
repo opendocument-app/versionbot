@@ -51,3 +51,4 @@ jobs:
                   branch: ${{ env.BOT_PR_BRANCH }}
                   title: ${{ env.BOT_PR_TITLE }}
                   author: ${{ env.BOT_COMMAND_PREFIX }} <noreply@github.com>
+                  committer: ${{ env.BOT_COMMAND_PREFIX }} <noreply@github.com>

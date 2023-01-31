@@ -10,9 +10,9 @@ on:
 
 env:
     BOT_PR_BRANCH: version-bump
-    BOT_PR_TITLE: "Bump version"
+    BOT_PR_TITLE: 'Bump version'
     BOT_REFERENCE_BRANCH: master
-    BOT_COMMAND_PREFIX: "@versionbot"
+    BOT_COMMAND_PREFIX: versionbot
 
 jobs:
     update:
@@ -50,3 +50,4 @@ jobs:
                   base: ${{ env.BOT_REFERENCE_BRANCH }}
                   branch: ${{ env.BOT_PR_BRANCH }}
                   title: ${{ env.BOT_PR_TITLE }}
+                  author: ${{ env.BOT_COMMAND_PREFIX }} <noreply@github.com>

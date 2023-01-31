@@ -52,3 +52,4 @@ jobs:
                   title: ${{ env.BOT_PR_TITLE }}
                   author: ${{ env.BOT_COMMAND_PREFIX }} <noreply@github.com>
                   committer: ${{ env.BOT_COMMAND_PREFIX }} <noreply@github.com>
+                  body: 'Post a comment like `@versionbot minor` to bump the version further'
